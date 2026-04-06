@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meus Veículos - AutoCare</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial;
+            background: #f1f2f6;
+            margin: 0;
+        }
+
+        /* 🔥 HEADER */
+        .header {
+            background: #273c75;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .menu a {
+            background: white;
+            color: #273c75;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        /* 🔥 CONTAINER */
+        .container {
+            padding: 30px;
+        }
+
+        h2 {
+            color: #2f3640;
+            margin-bottom: 20px;
+        }
+
+        /* 🔥 BOTÃO */
+        .btn-add {
+            display: inline-block;
+            margin-bottom: 20px;
+            background: #273c75;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .btn-add:hover {
+            background: #192a56;
+        }
+
+        /* 🔥 GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        /* 🔥 CARD */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #273c75;
+        }
+
+        .info {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* 🔥 AÇÕES */
+        .actions {
+            margin-top: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            margin-right: 5px;
+        }
+
+        .btn-edit {
+            background: #273c75;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e84118;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #192a56;
+        }
+
+        .btn-delete:hover {
+            background: #c23616;
+        }
+
+        /* 🔥 VAZIO */
+        .empty {
+            color: #999;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔥 HEADER -->
+<div class="header">
+    <div class="logo">🚗 AutoCare</div>
+
+    <div class="menu">
+        <a href="/">📋 Dashboard</a>
+        <a href="/historico/">📊 Histórico</a>
+        <a href="/accounts/logout/">Sair</a>
+    </div>
+</div>
+
+<!-- 🔥 CONTEÚDO -->
+<div class="container">
+
+    <h2>🚗 Meus Veículos</h2>
+
+    <a href="/veiculo/novo/" class="btn-add">➕ Novo veículo</a>
+
+    {% if veiculos %}
+    <div class="grid">
+
+        {% for v in veiculos %}
+        <div class="card">
+
+            <h3>{{ v.modelo }}</h3>
+
+            <div class="info"><b>Marca:</b> {{ v.marca }}</div>
+            <div class="info"><b>Ano:</b> {{ v.ano }}</div>
+            <div class="info"><b>KM atual:</b> {{ v.km_atual }}</div>
+
+            <div class="actions">
+                <a href="/veiculo/{{ v.id }}/editar/" class="btn btn-edit">✏️ Editar</a>
+                <a href="/veiculo/{{ v.id }}/deletar/" class="btn btn-delete">❌ Excluir</a>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+        <div class="empty">
+            Nenhum veículo cadastrado ainda 🚗
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

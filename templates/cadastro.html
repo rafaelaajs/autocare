@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Criar Conta - AutoCare</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial;
+            background: linear-gradient(135deg, #273c75, #40739e);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+            width: 340px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #273c75;
+        }
+
+        .slogan {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #2f3640;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        input:focus {
+            border-color: #273c75;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #273c75;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #192a56;
+        }
+
+        .link {
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .link a {
+            color: #273c75;
+            text-decoration: none;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">🚗 AutoCare</div>
+    <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
+
+    <h2>Criar Conta</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+        {% endfor %}
+
+        <button type="submit" class="btn">Cadastrar</button>
+    </form>
+
+    <div class="link">
+        Já tem conta? <a href="/accounts/login/">Entrar</a>
+    </div>
+
+</div>
+
+</body>
+</html>

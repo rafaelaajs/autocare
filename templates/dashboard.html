@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - AutoCare</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial;
+            background: #f1f2f6;
+            margin: 0;
+        }
+
+        /* 🔥 TOPO */
+        .header {
+            background: #273c75;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: white;
+            color: #273c75;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* 🔥 CONTAINER */
+        .container {
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #2f3640;
+        }
+
+        /* 🔥 GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        /* 🔥 CARD */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #273c75;
+        }
+
+        .info {
+            font-size: 14px;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .alerta {
+            background: #e84118;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .ok {
+            background: #44bd32;
+        }
+
+        .btn-action {
+            margin-top: 15px;
+            display: inline-block;
+            padding: 8px 12px;
+            background: #273c75;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .empty {
+            color: #999;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔥 HEADER -->
+<div class="header">
+    <!-- 🔥 HEADER -->
+<div class="header">
+
+    <div class="left">
+        <div class="logo">🚗 AutoCare</div>
+        <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
+    </div>
+
+</div>
+
+    <div>
+        <a href="/veiculos/" class="btn">🚗 Veículos</a>
+        <a href="/historico/" class="btn">📊 Histórico de Manutenção</a>
+        <a href="/accounts/logout/" class="btn">Sair</a>
+    </div>
+</div>
+
+<!-- 🔥 CONTEÚDO -->
+<div class="container">
+
+    <h2>📋 Manutenções</h2>
+
+    <div class="grid">
+
+        {% for item in dados %}
+        <div class="card">
+
+            <!-- 🔥 STATUS -->
+            {% if item.alerta %}
+                <div class="alerta">⚠ Atenção</div>
+            {% else %}
+                <div class="alerta ok">✔ OK</div>
+            {% endif %}
+
+            <h3>{{ item.tipo.nome }}</h3>
+
+            <div class="info">
+                <b>Veículo:</b> {{ item.veiculo.modelo }}
+            </div>
+
+            {% if item.sem_historico %}
+                <div class="info empty">
+                    ⚠ Nunca registrado
+                </div>
+            {% else %}
+                <div class="info">
+                    <b>Última troca:</b> {{ item.ultima_data }}
+                </div>
+
+                <div class="info">
+                    <b>KM:</b> {{ item.ultimo_km }}
+                </div>
+            {% endif %}
+
+            <div class="info">
+                <b>Próxima:</b> 
+                {% if item.proxima_data %}
+                    {{ item.proxima_data }}
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+
+            <div class="info">
+                <b>Próx. KM:</b> 
+                {% if item.proximo_km %}
+                    {{ item.proximo_km }}
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+
+            <!-- 🔥 BOTÃO -->
+            <a href="/adicionar/?veiculo={{ item.veiculo.id }}&tipo={{ item.tipo.id }}" class="btn-action">
+                ➕ Registrar
+            </a>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excluir Veículo</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI';
+            background: linear-gradient(135deg, #e84118, #c23616);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            width: 320px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: #c23616;
+        }
+
+        .btn-danger {
+            background: #e84118;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+            border-radius: 6px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            background: #c23616;
+        }
+
+        .link {
+            margin-top: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #273c75;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>⚠ Excluir veículo</h2>
+
+    <p>Tem certeza que deseja excluir:</p>
+
+    <b>{{ veiculo.modelo }}</b>
+
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn-danger">Excluir</button>
+    </form>
+
+    <div class="link">
+        <a href="/veiculos/">Cancelar</a>
+    </div>
+
+</div>
+
+</body>
+</html>
