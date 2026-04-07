@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
 from .models import Veiculo, Manutencao, TipoManutencao
-from .forms import ManutencaoForm
+from .forms import ManutencaoForm, VeiculoForm
 
 
 # 🚗 DASHBOARD
@@ -20,7 +22,6 @@ def dashboard(request):
             veiculo=veiculo
         ).order_by('km').first()
 
-        # valor padrão (caso não exista nada)
         km_base = veiculo.km_atual
 
         if primeira_manutencao:
@@ -101,9 +102,8 @@ def historico(request):
         'manutencoes': manutencoes
     })
 
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
 
+# 👤 CADASTRO
 def cadastro(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -116,6 +116,8 @@ def cadastro(request):
 
     return render(request, 'cadastro.html', {'form': form})
 
+
+# 🚗 LISTAR VEÍCULOS
 @login_required
 def veiculos(request):
     veiculos = Veiculo.objects.filter(usuario=request.user)
@@ -124,11 +126,8 @@ def veiculos(request):
         'veiculos': veiculos
     })
 
-from .forms import VeiculoForm
-from django.shortcuts import get_object_or_404
 
-
-# ➕ CADASTRAR
+# ➕ ADICIONAR VEÍCULO
 @login_required
 def adicionar_veiculo(request):
     if request.method == 'POST':
@@ -144,7 +143,7 @@ def adicionar_veiculo(request):
     return render(request, 'veiculo_form.html', {'form': form})
 
 
-# ✏️ EDITAR
+# ✏️ EDITAR VEÍCULO
 @login_required
 def editar_veiculo(request, id):
     veiculo = get_object_or_404(Veiculo, id=id, usuario=request.user)
@@ -160,7 +159,7 @@ def editar_veiculo(request, id):
     return render(request, 'veiculo_form.html', {'form': form})
 
 
-# ❌ DELETAR
+# ❌ DELETAR VEÍCULO
 @login_required
 def deletar_veiculo(request, id):
     veiculo = get_object_or_404(Veiculo, id=id, usuario=request.user)
