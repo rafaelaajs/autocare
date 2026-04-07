@@ -1,66 +1,47 @@
-from datetime import timedelta
+from django.core.mail import send_mail
+from django.conf import settings
 from django.utils import timezone
 
-from core.services.email_service import enviar_alerta_email
-from core.models import Manutencao  # ⚠️ ajustar se necessário
+from core.models import Manutencao
+
+
+def enviar_email(manutencao, usuario, mensagem):
+    send_mail(
+        subject='🚗 AutoCare - Alerta de Manutenção',
+        message=f'{mensagem}\n\n{manutencao.tipo.nome} - {manutencao.veiculo.modelo}',
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[usuario.email],
+    )
+    
 
 
 def verificar_e_enviar_alertas():
     hoje = timezone.now().date()
-
-    manutencoes = Manutencao.objects.select_related(
-        'veiculo', 'tipo', 'veiculo__usuario'
-    )
+    manutencoes = Manutencao.objects.all()
 
     for m in manutencoes:
-        usuario = m.veiculo.usuario
         proxima_data = m.proxima_data()
-        proximo_km = m.proximo_km()
 
-        # ------------------------
-        # 📅 ALERTAS POR DATA
-        # ------------------------
-        if proxima_data:
+        if not proxima_data:
+            continue
 
-            # ⏳ 7 dias antes
-            if hoje == (proxima_data - timedelta(days=7)) and not m.alerta_7_dias_antes:
-                enviar_email(m, usuario, "⏳ Sua manutenção está próxima (7 dias)")
-                m.alerta_7_dias_antes = True
-                m.save()
+        usuario = m.veiculo.usuario
+        dias = (proxima_data - hoje).days
 
-            # 🚨 no dia
-            elif hoje == proxima_data and not m.alerta_no_dia:
-                enviar_email(m, usuario, "🚨 Sua manutenção vence hoje")
-                m.alerta_no_dia = True
-                m.save()
+        # 🔔 7 dias antes
+        if dias == 7 and not getattr(m, 'alerta_7_dias_antes', False):
+            enviar_email(m, usuario, "🔔 Sua manutenção vence em 7 dias")
+            m.alerta_7_dias_antes = True
+            m.save()
 
-           # ⚠️ ATRASADO (QUALQUER DIA APÓS VENCIMENTO)
-           elif hoje > proxima_data and not m.alerta_7_dias_depois:
-                enviar_email(m, usuario, "⚠️ Manutenção atrasada")
-                m.alerta_7_dias_depois = True
-                m.save()
+        # 🔔 no dia
+        elif dias == 0 and not getattr(m, 'alerta_no_dia', False):
+            enviar_email(m, usuario, "⚠️ Sua manutenção vence hoje")
+            m.alerta_no_dia = True
+            m.save()
 
-        # ------------------------
-        # 🚗 ALERTA POR KM
-        # ------------------------
-        if proximo_km:
-            if m.veiculo.km_atual >= proximo_km and not m.alerta_no_dia:
-                enviar_email(m, usuario, "🚨 Manutenção por KM atingida")
-                m.alerta_no_dia = True
-                m.save()
-
-
-def enviar_email(manutencao, usuario, assunto):
-    mensagem = f"""
-Olá, {usuario.username}!
-
-A manutenção "{manutencao.tipo.nome}" do seu veículo {manutencao.veiculo.modelo} precisa de atenção.
-
-📅 Última manutenção: {manutencao.data}
-🚗 KM na última manutenção: {manutencao.km}
-
-Acesse o AutoCare para mais detalhes.
-
-- Equipe AutoCare
-"""
-    enviar_alerta_email(usuario.email, assunto, mensagem)
+        # 🔔 atrasado (qualquer dia depois)
+        elif dias < 0 and not getattr(m, 'alerta_atrasado', False):
+            enviar_email(m, usuario, "🚨 Manutenção atrasada")
+            m.alerta_atrasado = True
+            m.save()
