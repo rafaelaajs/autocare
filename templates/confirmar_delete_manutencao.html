@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmar exclusão</title>
+</head>
+
+<body>
+
+<h2>Tem certeza que deseja excluir esta manutenção?</h2>
+
+<p>
+    <b>{{ manutencao.tipo.nome }}</b> - 
+    {{ manutencao.veiculo.modelo }}
+</p>
+
+<p>Data: {{ manutencao.data }}</p>
+<p>KM: {{ manutencao.km }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sim, deletar</button>
+</form>
+
+<a href="/historico/">Cancelar</a>
+
+</body>
+</html>

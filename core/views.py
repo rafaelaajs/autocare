@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.utils import timezone
 
 from .models import Veiculo, Manutencao, TipoManutencao
 from .forms import ManutencaoForm, VeiculoForm
+
 
 # 🚗 DASHBOARD
 @login_required
@@ -16,7 +18,6 @@ def dashboard(request):
 
     for veiculo in veiculos:
 
-        # 🔥 PRIMEIRA manutenção (base inicial)
         primeira_manutencao = Manutencao.objects.filter(
             veiculo=veiculo
         ).order_by('km').first()
@@ -57,7 +58,6 @@ def dashboard(request):
                     'sem_historico': True
                 })
 
-    # ✅ FORA dos loops (importante!)
     tem_veiculo = veiculos.exists()
     tem_manutencao = Manutencao.objects.filter(
         veiculo__usuario=request.user
@@ -84,7 +84,6 @@ def adicionar_manutencao(request):
     else:
         initial_data = {}
 
-        # 🔥 parâmetros da URL (pré-preenchimento)
         veiculo_id = request.GET.get('veiculo')
         tipo_id = request.GET.get('tipo')
 
@@ -96,7 +95,6 @@ def adicionar_manutencao(request):
 
         form = ManutencaoForm(initial=initial_data)
 
-    # 🔒 filtrar veículos do usuário
     form.fields['veiculo'].queryset = Veiculo.objects.filter(usuario=request.user)
 
     return render(request, 'adicionar_manutencao.html', {'form': form})
@@ -114,6 +112,44 @@ def historico(request):
     })
 
 
+# ✏️ EDITAR MANUTENÇÃO
+@login_required
+def editar_manutencao(request, id):
+    manutencao = get_object_or_404(
+        Manutencao,
+        id=id,
+        veiculo__usuario=request.user
+    )
+
+    if request.method == 'POST':
+        form = ManutencaoForm(request.POST, instance=manutencao)
+        if form.is_valid():
+            form.save()
+            return redirect('historico')  # 🔥 melhor UX
+    else:
+        form = ManutencaoForm(instance=manutencao)
+
+    return render(request, 'adicionar_manutencao.html', {'form': form})
+
+
+# ❌ DELETAR MANUTENÇÃO
+@login_required
+def deletar_manutencao(request, id):
+    manutencao = get_object_or_404(
+        Manutencao,
+        id=id,
+        veiculo__usuario=request.user
+    )
+
+    if request.method == 'POST':
+        manutencao.delete()
+        return redirect('historico')
+
+    return render(request, 'confirmar_delete_manutencao.html'), {
+        'manutencao': manutencao
+    }
+
+
 # 👤 CADASTRO
 def cadastro(request):
     if request.method == 'POST':
@@ -128,7 +164,7 @@ def cadastro(request):
     return render(request, 'cadastro.html', {'form': form})
 
 
-# 🚗 LISTAR VEÍCULOS
+# 🚗 VEÍCULOS
 @login_required
 def veiculos(request):
     veiculos = Veiculo.objects.filter(usuario=request.user)
@@ -181,8 +217,8 @@ def deletar_veiculo(request, id):
 
     return render(request, 'confirmar_delete.html', {'veiculo': veiculo})
 
-from django.utils import timezone
 
+# 🚨 ALERTAS
 @login_required
 def alertas(request):
     veiculos = Veiculo.objects.filter(usuario=request.user)
@@ -211,18 +247,17 @@ def alertas(request):
             elif dias <= 7:
                 nivel = "proximo"
             else:
-                continue  # ignora ok
+                continue
 
             lista_alertas.append({
-             "veiculo": veiculo,
-             "tipo": tipo,
-             "proxima_data": proxima_data,
-             "dias": dias,
-             "dias_exibicao": dias_exibicao,
-             "nivel": nivel
-})
+                "veiculo": veiculo,
+                "tipo": tipo,
+                "proxima_data": proxima_data,
+                "dias": dias,
+                "dias_exibicao": dias_exibicao,
+                "nivel": nivel
+            })
 
-    # 🔥 ordenar: vencido primeiro
     lista_alertas = sorted(lista_alertas, key=lambda x: x["dias"])
 
     return render(request, "alertas.html", {

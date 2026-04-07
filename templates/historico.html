@@ -1,83 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Histórico</title>
+    <title>Histórico - AutoCare</title>
 
     <style>
         body {
-            font-family: Arial;
+            font-family: 'Segoe UI', Arial;
             background: #f1f2f6;
+            margin: 0;
+        }
+
+        .header {
+            background: #273c75;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
             padding: 30px;
         }
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-    padding: 6px 12px; /* 🔥 altura menor, largura ok */
-    background: #273c75;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    display: inline-block;
-    font-size: 14px;
-}
         .card {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
+            margin-bottom: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .btn-group {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
         }
 
-        th {
+        .btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .editar {
             background: #273c75;
             color: white;
-            padding: 10px;
         }
 
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+        .deletar {
+            background: #e84118;
+            color: white;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="top-bar">
-        <h1>📊 Histórico de Manutenções</h1>
-        <a href="/" class="btn">⬅ Voltar</a>
-    </div>
+<div class="header">
+    <h2>📊 Histórico de Manutenção</h2>
+</div>
 
+<div class="container">
+
+    {% for m in manutencoes %}
     <div class="card">
-        <table>
-            <tr>
-                <th>Veículo</th>
-                <th>Tipo</th>
-                <th>Data</th>
-                <th>KM</th>
-                <th>Observações</th>
-            </tr>
 
-            {% for m in manutencoes %}
-            <tr>
-                <td>{{ m.veiculo.modelo }}</td>
-                <td>{{ m.tipo.nome }}</td>
-                <td>{{ m.data }}</td>
-                <td>{{ m.km }}</td>
-                <td>{{ m.observacoes }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <h3>{{ m.tipo.nome }}</h3>
+
+        <p><b>Veículo:</b> {{ m.veiculo.modelo }}</p>
+        <p><b>Data:</b> {{ m.data }}</p>
+        <p><b>KM:</b> {{ m.km }}</p>
+
+        <div class="btn-group">
+            <a href="{% url 'editar_manutencao' m.id %}" class="btn editar">
+                ✏️ Editar
+            </a>
+
+            <a href="{% url 'deletar_manutencao' m.id %}" class="btn deletar">
+                ❌ Deletar
+            </a>
+        </div>
+
     </div>
+    {% endfor %}
+
+</div>
 
 </body>
 </html>

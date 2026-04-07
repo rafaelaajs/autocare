@@ -10,7 +10,6 @@
             margin: 0;
         }
 
-        /* 🔥 TOPO */
         .header {
             background: #273c75;
             color: white;
@@ -34,7 +33,6 @@
             font-size: 14px;
         }
 
-        /* 🔥 CONTAINER */
         .container {
             padding: 30px;
         }
@@ -44,14 +42,12 @@
             color: #2f3640;
         }
 
-        /* 🔥 GRID */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 20px;
         }
 
-        /* 🔥 CARD */
         .card {
             background: white;
             padding: 20px;
@@ -87,7 +83,7 @@
         }
 
         .btn-action {
-            margin-top: 15px;
+            margin-top: 10px;
             display: inline-block;
             padding: 8px 12px;
             background: #273c75;
@@ -95,6 +91,12 @@
             border-radius: 6px;
             text-decoration: none;
             font-size: 13px;
+        }
+
+        .btn-group {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
         }
 
         .empty {
@@ -106,51 +108,42 @@
 
 <body>
 
-<!-- 🔥 HEADER -->
 <div class="header">
-    <!-- 🔥 HEADER -->
-<div class="header">
-
-    <div class="left">
-        <div class="logo">🚗 AutoCare</div>
-        <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
-    </div>
-
-</div>
+    <div class="logo">🚗 AutoCare</div>
 
     <div>
         <a href="/veiculos/" class="btn">🚗 Veículos</a>
-        <a href="/historico/" class="btn">📊 Histórico de Manutenção</a>
+        <a href="/historico/" class="btn">📊 Histórico</a>
         <a href="{% url 'alertas' %}" class="btn">🚨 Alertas</a>
+
         <form action="/accounts/logout/" method="post" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="btn">Sair</button>
-</form>
+            {% csrf_token %}
+            <button type="submit" class="btn">Sair</button>
+        </form>
     </div>
 </div>
 
-<!-- 🔥 CONTEÚDO -->
 <div class="container">
 
-<h2>📋 Manutenções</h2>
+    <h2>📋 Manutenções</h2>
 
-{% if not tem_veiculo %}
-    <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
-        🚗 Você ainda não cadastrou um veículo.
-        <a href="/veiculos/" class="btn-action">Cadastrar veículo</a>
-    </div>
-{% elif not tem_manutencao %}
-    <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
-        🔧 Cadastre suas primeiras manutenções para começar a receber alertas
-    </div>
-{% endif %}
+    {% if not tem_veiculo %}
+        <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
+            🚗 Você ainda não cadastrou um veículo.
+            <a href="/veiculos/" class="btn-action">Cadastrar veículo</a>
+        </div>
 
-<div class="grid">
+    {% elif not tem_manutencao %}
+        <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
+            🔧 Cadastre suas primeiras manutenções para começar a receber alertas
+        </div>
+    {% endif %}
+
+    <div class="grid">
 
         {% for item in dados %}
         <div class="card">
 
-            <!-- 🔥 STATUS -->
             {% if item.alerta %}
                 <div class="alerta">⚠ Atenção</div>
             {% else %}
@@ -164,10 +157,13 @@
             </div>
 
             {% if item.sem_historico %}
+
                 <div class="info empty">
                     ⚠ Nunca registrado
                 </div>
+
             {% else %}
+
                 <div class="info">
                     <b>Última troca:</b> {{ item.ultima_data }}
                 </div>
@@ -175,10 +171,11 @@
                 <div class="info">
                     <b>KM:</b> {{ item.ultimo_km }}
                 </div>
+
             {% endif %}
 
             <div class="info">
-                <b>Próxima:</b> 
+                <b>Próxima:</b>
                 {% if item.proxima_data %}
                     {{ item.proxima_data }}
                 {% else %}
@@ -187,7 +184,7 @@
             </div>
 
             <div class="info">
-                <b>Próx. KM:</b> 
+                <b>Próx. KM:</b>
                 {% if item.proximo_km %}
                     {{ item.proximo_km }}
                 {% else %}
@@ -195,10 +192,20 @@
                 {% endif %}
             </div>
 
-            <!-- 🔥 BOTÃO -->
-            <a href="/adicionar/?veiculo={{ item.veiculo.id }}&tipo={{ item.tipo.id }}" class="btn-action">
-                ➕ Registrar
-            </a>
+            <!-- 🔥 BOTÕES -->
+            <div class="btn-group">
+
+                <a href="/adicionar/?veiculo={{ item.veiculo.id }}&tipo={{ item.tipo.id }}" class="btn-action">
+                    ➕ Registrar
+                </a>
+
+                {% if item.id %}
+                <a href="{% url 'editar_manutencao' item.id %}" class="btn-action">
+                     ✏️ Editar
+                </a>
+                 {% endif %}
+
+            </div>
 
         </div>
         {% endfor %}

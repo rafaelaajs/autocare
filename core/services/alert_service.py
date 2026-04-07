@@ -34,9 +34,9 @@ def verificar_e_enviar_alertas():
                 m.alerta_no_dia = True
                 m.save()
 
-            # ⚠️ 7 dias depois
-            elif hoje == (proxima_data + timedelta(days=7)) and not m.alerta_7_dias_depois:
-                enviar_email(m, usuario, "⚠️ Manutenção atrasada (7 dias)")
+           # ⚠️ ATRASADO (QUALQUER DIA APÓS VENCIMENTO)
+           elif hoje > proxima_data and not m.alerta_7_dias_depois:
+                enviar_email(m, usuario, "⚠️ Manutenção atrasada")
                 m.alerta_7_dias_depois = True
                 m.save()
 
