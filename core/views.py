@@ -169,3 +169,51 @@ def deletar_veiculo(request, id):
         return redirect('veiculos')
 
     return render(request, 'confirmar_delete.html', {'veiculo': veiculo})
+
+from django.utils import timezone
+
+@login_required
+def alertas(request):
+    veiculos = Veiculo.objects.filter(usuario=request.user)
+    tipos = TipoManutencao.objects.all()
+
+    hoje = timezone.now().date()
+    lista_alertas = []
+
+    for veiculo in veiculos:
+        for tipo in tipos:
+            ultima = Manutencao.ultima_manutencao(veiculo, tipo)
+
+            if not ultima:
+                continue
+
+            proxima_data = ultima.proxima_data()
+
+            if not proxima_data:
+                continue
+
+            dias = (proxima_data - hoje).days
+            dias_exibicao = abs(dias)
+
+            if dias <= 0:
+                nivel = "vencido"
+            elif dias <= 7:
+                nivel = "proximo"
+            else:
+                continue  # ignora ok
+
+            lista_alertas.append({
+             "veiculo": veiculo,
+             "tipo": tipo,
+             "proxima_data": proxima_data,
+             "dias": dias,
+             "dias_exibicao": dias_exibicao,
+             "nivel": nivel
+})
+
+    # 🔥 ordenar: vencido primeiro
+    lista_alertas = sorted(lista_alertas, key=lambda x: x["dias"])
+
+    return render(request, "alertas.html", {
+        "alertas": lista_alertas
+    })

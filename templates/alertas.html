@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alertas - AutoCare</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial;
+            background: #f1f2f6;
+            margin: 0;
+        }
+
+        .header {
+            background: #273c75;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .vencido {
+            border-left: 6px solid #e84118;
+        }
+
+        .proximo {
+            border-left: 6px solid #fbc531;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>🚨 Alertas de Manutenção</h2>
+</div>
+
+<div class="container">
+
+    {% if alertas %}
+        {% for a in alertas %}
+            <div class="card {{ a.nivel }}">
+                <h3>{{ a.tipo.nome }}</h3>
+                <p><b>Veículo:</b> {{ a.veiculo.modelo }}</p>
+                <p><b>Data:</b> {{ a.proxima_data }}</p>
+
+                {% if a.nivel == "vencido" %}
+                    <p style="color:red;">🔴 Vencido há {{ a.dias_exibicao }}
+                {% else %}
+                    <p style="color:orange;">🟡 Vence em {{ a.dias }} dias</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>🎉 Nenhuma manutenção crítica!</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
