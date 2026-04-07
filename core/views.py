@@ -6,7 +6,6 @@ from django.contrib.auth import login
 from .models import Veiculo, Manutencao, TipoManutencao
 from .forms import ManutencaoForm, VeiculoForm
 
-
 # 🚗 DASHBOARD
 @login_required
 def dashboard(request):
@@ -58,7 +57,19 @@ def dashboard(request):
                     'sem_historico': True
                 })
 
-    return render(request, 'dashboard.html', {'dados': dados})
+    # ✅ FORA dos loops (importante!)
+    tem_veiculo = veiculos.exists()
+    tem_manutencao = Manutencao.objects.filter(
+        veiculo__usuario=request.user
+    ).exists()
+
+    contexto = {
+        'dados': dados,
+        'tem_veiculo': tem_veiculo,
+        'tem_manutencao': tem_manutencao
+    }
+
+    return render(request, 'dashboard.html', contexto)
 
 
 # ➕ ADICIONAR MANUTENÇÃO

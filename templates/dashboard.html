@@ -122,16 +122,30 @@
         <a href="/veiculos/" class="btn">🚗 Veículos</a>
         <a href="/historico/" class="btn">📊 Histórico de Manutenção</a>
         <a href="{% url 'alertas' %}" class="btn">🚨 Alertas</a>
-        <a href="/accounts/logout/" class="btn">Sair</a>
+        <form action="/accounts/logout/" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn">Sair</button>
+</form>
     </div>
 </div>
 
 <!-- 🔥 CONTEÚDO -->
 <div class="container">
 
-    <h2>📋 Manutenções</h2>
+<h2>📋 Manutenções</h2>
 
-    <div class="grid">
+{% if not tem_veiculo %}
+    <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
+        🚗 Você ainda não cadastrou um veículo.
+        <a href="/veiculos/" class="btn-action">Cadastrar veículo</a>
+    </div>
+{% elif not tem_manutencao %}
+    <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
+        🔧 Cadastre suas primeiras manutenções para começar a receber alertas.
+    </div>
+{% endif %}
+
+<div class="grid">
 
         {% for item in dados %}
         <div class="card">
