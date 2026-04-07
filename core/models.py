@@ -1,9 +1,4 @@
 from django.db import models
-
-from django.db import models
-from django.contrib.auth.models import User
-
-from django.db import models
 from django.contrib.auth.models import User
 
 # 🔹 Categoria (nível mais alto)
@@ -18,8 +13,6 @@ class Categoria(models.Model):
 class TipoManutencao(models.Model):
     nome = models.CharField(max_length=100)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-
-    # 🔥 REGRA DA MANUTENÇÃO
     frequencia_dias = models.IntegerField(null=True, blank=True)
     frequencia_km = models.IntegerField(null=True, blank=True)
 
