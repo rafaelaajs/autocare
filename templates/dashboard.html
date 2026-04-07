@@ -19,9 +19,20 @@
             align-items: center;
         }
 
+        .left {
+            display: flex;
+            flex-direction: column;
+        }
+
         .logo {
             font-size: 22px;
             font-weight: bold;
+        }
+
+        .slogan {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 4px;
         }
 
         .btn {
@@ -53,10 +64,12 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            position: relative;
         }
 
         .card h3 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin: 0;
             color: #273c75;
         }
@@ -67,15 +80,15 @@
             color: #555;
         }
 
+        .status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: white;
+        }
+
         .alerta {
             background: #e84118;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            position: absolute;
-            top: 15px;
-            right: 15px;
         }
 
         .ok {
@@ -109,7 +122,10 @@
 <body>
 
 <div class="header">
-    <div class="logo">🚗 AutoCare</div>
+    <div class="left">
+        <div class="logo">🚗 AutoCare</div>
+        <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
+    </div>
 
     <div>
         <a href="/veiculos/" class="btn">🚗 Veículos</a>
@@ -144,26 +160,25 @@
         {% for item in dados %}
         <div class="card">
 
-            {% if item.alerta %}
-                <div class="alerta">⚠ Atenção</div>
-            {% else %}
-                <div class="alerta ok">✔ OK</div>
-            {% endif %}
+            <h3>
+                {{ item.tipo.nome }}
 
-            <h3>{{ item.tipo.nome }}</h3>
+                {% if item.alerta %}
+                    <span class="status alerta">⚠ Atenção</span>
+                {% else %}
+                    <span class="status ok">✔ OK</span>
+                {% endif %}
+            </h3>
 
             <div class="info">
                 <b>Veículo:</b> {{ item.veiculo.modelo }}
             </div>
 
             {% if item.sem_historico %}
-
                 <div class="info empty">
                     ⚠ Nunca registrado
                 </div>
-
             {% else %}
-
                 <div class="info">
                     <b>Última troca:</b> {{ item.ultima_data }}
                 </div>
@@ -171,7 +186,6 @@
                 <div class="info">
                     <b>KM:</b> {{ item.ultimo_km }}
                 </div>
-
             {% endif %}
 
             <div class="info">
@@ -192,19 +206,10 @@
                 {% endif %}
             </div>
 
-            <!-- 🔥 BOTÕES -->
             <div class="btn-group">
-
                 <a href="/adicionar/?veiculo={{ item.veiculo.id }}&tipo={{ item.tipo.id }}" class="btn-action">
                     ➕ Registrar
                 </a>
-
-                {% if item.id %}
-                <a href="{% url 'editar_manutencao' item.id %}" class="btn-action">
-                     ✏️ Editar
-                </a>
-                 {% endif %}
-
             </div>
 
         </div>
