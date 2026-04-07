@@ -41,6 +41,11 @@ class Manutencao(models.Model):
     km = models.IntegerField()
     observacoes = models.TextField(blank=True)
 
+      # NOVOS CAMPOS DE ALERTAS
+    alerta_7_dias_antes = models.BooleanField(default=False)
+    alerta_no_dia = models.BooleanField(default=False)
+    alerta_7_dias_depois = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.tipo.nome} - {self.veiculo}"
 
