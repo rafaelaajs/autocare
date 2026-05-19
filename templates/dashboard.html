@@ -108,7 +108,7 @@
             color: #555;
         }
 
-        /* 🔥 NOVO SELO */
+        /* 🔥 STATUS */
         .status {
             font-size: 12px;
             font-weight: 600;
@@ -126,9 +126,9 @@
         }
 
         .ok {
-            background: #edfcef;
-            color: #27ae60;
-            border: 1px solid #b7e4c7;
+            background: #fff8e1;
+            color: #f39c12;
+            border: 1px solid #f9d98c;
         }
 
         .btn-action {
@@ -188,7 +188,7 @@
 
 <div class="container">
 
-    <h2>📋 Manutenções</h2>
+    <h2>📋 Resumo de Manutenções</h2>
 
     {% if not tem_veiculo %}
 
@@ -225,11 +225,11 @@
 
                 {% if item.alerta %}
                     <span class="status alerta">
-                        ⚠ Revisar
+                        🔴 Pendente
                     </span>
                 {% else %}
                     <span class="status ok">
-                        ✔ OK
+                        🟡 Próxima
                     </span>
                 {% endif %}
             </h3>
