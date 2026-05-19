@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 from .models import Veiculo, Manutencao, TipoManutencao
 from .forms import ManutencaoForm, VeiculoForm
@@ -262,4 +263,25 @@ def alertas(request):
 
     return render(request, "alertas.html", {
         "alertas": lista_alertas
+    })
+
+
+# 🚨 MINHA CONTA
+
+@login_required
+def minha_conta(request):
+
+    usuario = request.user
+    sucesso = False
+
+    if request.method == 'POST':
+        usuario.first_name = request.POST.get('nome')
+        usuario.email = request.POST.get('email')
+        usuario.save()
+
+        sucesso = True
+
+    return render(request, 'minha_conta.html', {
+        'usuario': usuario,
+        'sucesso': sucesso
     })

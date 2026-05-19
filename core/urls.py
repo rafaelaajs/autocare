@@ -22,4 +22,8 @@ urlpatterns = [
 
     # 🚨 Alertas
     path('alertas/', views.alertas, name='alertas'),
+
+    # 🚨 Minha Conta
+    path('minha-conta/', views.minha_conta, name='minha_conta'),
+
 ]
