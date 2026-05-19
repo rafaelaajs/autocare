@@ -75,14 +75,14 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
 
         .card {
             background: white;
-            padding: 20px;
-            border-radius: 14px;
+            padding: 22px;
+            border-radius: 16px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.08);
             transition: 0.2s ease;
         }
@@ -94,10 +94,12 @@
         .card h3 {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            gap: 10px;
             margin: 0;
             color: #273c75;
             font-size: 18px;
+            line-height: 1.4;
         }
 
         .info {
@@ -106,28 +108,27 @@
             color: #555;
         }
 
-        /* 🔥 NOVO ALERTA */
+        /* 🔥 NOVO SELO */
         .status {
-            font-size: 11px;
-            font-weight: bold;
-            padding: 6px 10px;
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            letter-spacing: 0.3px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 999px;
+            display: inline-block;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .alerta {
-            background: #ffe5e0;
-            color: #c23616;
-            border: 1px solid #f5b7b1;
+            background: #fff0ee;
+            color: #d63031;
+            border: 1px solid #f5c6c6;
         }
 
         .ok {
-            background: #eafaf1;
+            background: #edfcef;
             color: #27ae60;
-            border: 1px solid #b8e994;
+            border: 1px solid #b7e4c7;
         }
 
         .btn-action {
@@ -211,11 +212,11 @@
         <div class="card">
 
             <h3>
-                {{ item.tipo.nome }}
+                <span>{{ item.tipo.nome }}</span>
 
                 {% if item.alerta %}
                     <span class="status alerta">
-                        ⚠ Atenção
+                        ⚠ Revisar
                     </span>
                 {% else %}
                     <span class="status ok">
