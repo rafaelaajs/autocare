@@ -10,16 +10,64 @@
             margin: 0;
         }
 
+        /* 🔥 HEADER */
         .header {
             background: #273c75;
             color: white;
             padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
+        .left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .slogan {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .menu {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-menu {
+            background: white;
+            color: #273c75;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-menu:hover {
+            background: #dcdde1;
+        }
+
+        /* 🔥 CONTAINER */
         .container {
             padding: 30px;
         }
 
+        h2 {
+            margin-top: 0;
+            color: #2f3640;
+        }
+
+        /* 🔥 CARD */
         .card {
             background: white;
             padding: 20px;
@@ -28,6 +76,18 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
+        .card h3 {
+            margin-top: 0;
+            color: #273c75;
+        }
+
+        .info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* 🔥 BOTÕES */
         .btn-group {
             margin-top: 15px;
             display: flex;
@@ -50,38 +110,108 @@
             background: #e84118;
             color: white;
         }
+
+        .editar:hover {
+            background: #192a56;
+        }
+
+        .deletar:hover {
+            background: #c23616;
+        }
+
+        /* 🔥 VAZIO */
+        .empty {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            color: #999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 
 <body>
 
+<!-- 🔥 HEADER -->
 <div class="header">
-    <h2>📊 Histórico de Manutenção</h2>
+
+    <div class="left">
+        <div class="logo">🚗 AutoCare</div>
+        <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
+    </div>
+
+    <div class="menu">
+        <a href="/" class="btn-menu">📋 Dashboard</a>
+        <a href="/veiculos/" class="btn-menu">🚗 Veículos</a>
+        <a href="/historico/" class="btn-menu">📊 Histórico</a>
+        <a href="/alertas/" class="btn-menu">🚨 Alertas</a>
+
+        <!-- 🔥 Minha Conta -->
+        <a href="/minha-conta/" class="btn-menu">👤 Minha Conta</a>
+
+        <!-- 🔥 Voltar -->
+        <a href="javascript:history.back()" class="btn-menu">⬅ Voltar</a>
+
+        <form action="/accounts/logout/" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-menu">Sair</button>
+        </form>
+    </div>
+
 </div>
 
+<!-- 🔥 CONTEÚDO -->
 <div class="container">
 
-    {% for m in manutencoes %}
-    <div class="card">
+    <h2>📊 Histórico de Manutenção</h2>
 
-        <h3>{{ m.tipo.nome }}</h3>
+    {% if manutencoes %}
 
-        <p><b>Veículo:</b> {{ m.veiculo.modelo }}</p>
-        <p><b>Data:</b> {{ m.data }}</p>
-        <p><b>KM:</b> {{ m.km }}</p>
+        {% for m in manutencoes %}
+        <div class="card">
 
-        <div class="btn-group">
-            <a href="{% url 'editar_manutencao' m.id %}" class="btn editar">
-                ✏️ Editar
-            </a>
+            <h3>{{ m.tipo.nome }}</h3>
 
-            <a href="{% url 'deletar_manutencao' m.id %}" class="btn deletar">
-                ❌ Deletar
-            </a>
+            <div class="info">
+                <b>Veículo:</b> {{ m.veiculo.marca }} {{ m.veiculo.modelo }}
+            </div>
+
+            <div class="info">
+                <b>Data:</b> {{ m.data }}
+            </div>
+
+            <div class="info">
+                <b>KM:</b> {{ m.km }}
+            </div>
+
+            {% if m.observacoes %}
+            <div class="info">
+                <b>Observações:</b> {{ m.observacoes }}
+            </div>
+            {% endif %}
+
+            <div class="btn-group">
+
+                <a href="{% url 'editar_manutencao' m.id %}" class="btn editar">
+                    ✏️ Editar
+                </a>
+
+                <a href="{% url 'deletar_manutencao' m.id %}" class="btn deletar">
+                    ❌ Deletar
+                </a>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            🔧 Cadastre suas primeiras manutenções para começar a receber alertas.
         </div>
 
-    </div>
-    {% endfor %}
+    {% endif %}
 
 </div>
 

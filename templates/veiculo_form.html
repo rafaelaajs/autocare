@@ -54,6 +54,7 @@
             margin-bottom: 15px;
             border-radius: 6px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
 
         input:focus {
@@ -97,7 +98,7 @@
 
     <h2>Cadastro de Veículo</h2>
 
-    <form method="post">
+    <form method="post" id="veiculo-form">
         {% csrf_token %}
 
         {% for field in form %}
@@ -106,7 +107,7 @@
             {{ field.errors }}
         {% endfor %}
 
-        <button class="btn">Salvar</button>
+        <button class="btn" id="submit-btn">Salvar</button>
     </form>
 
     <div class="link">
@@ -114,6 +115,16 @@
     </div>
 
 </div>
+
+<script>
+    const form = document.getElementById('veiculo-form');
+    const button = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', () => {
+        button.disabled = true;
+        button.innerText = 'Salvando...';
+    });
+</script>
 
 </body>
 </html>

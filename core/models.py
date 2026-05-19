@@ -21,14 +21,16 @@ class TipoManutencao(models.Model):
 
 
 # 🔹 Veículo
+
 class Veiculo(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    marca = models.CharField(max_length=100, default="")
     modelo = models.CharField(max_length=100)
     ano = models.IntegerField()
     km_atual = models.IntegerField()
 
     def __str__(self):
-        return self.modelo
+        return f"{self.marca} {self.modelo}"
 
 
 from datetime import timedelta
@@ -45,6 +47,7 @@ class Manutencao(models.Model):
     alerta_7_dias_antes = models.BooleanField(default=False)
     alerta_no_dia = models.BooleanField(default=False)
     alerta_7_dias_depois = models.BooleanField(default=False)
+    alerta_atrasado = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.tipo.nome} - {self.veiculo}"

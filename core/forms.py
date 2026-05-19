@@ -10,4 +10,4 @@ class ManutencaoForm(forms.ModelForm):
 class VeiculoForm(forms.ModelForm):
     class Meta:
         model = Veiculo
-        fields = ['modelo', 'ano', 'km_atual']
+        fields = ['marca', 'modelo', 'ano', 'km_atual']

@@ -35,6 +35,12 @@
             margin-top: 4px;
         }
 
+        .menu {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         .btn {
             background: white;
             color: #273c75;
@@ -42,6 +48,12 @@
             border-radius: 6px;
             text-decoration: none;
             font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #dcdde1;
         }
 
         .container {
@@ -53,25 +65,41 @@
             color: #2f3640;
         }
 
+        .message-box {
+            background: #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #2d3436;
+        }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
 
         .card {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            transition: 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
         }
 
         .card h3 {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            gap: 10px;
             margin: 0;
             color: #273c75;
+            font-size: 18px;
+            line-height: 1.4;
         }
 
         .info {
@@ -80,19 +108,33 @@
             color: #555;
         }
 
+        /* 🔥 STATUS */
         .status {
             font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 6px;
-            color: white;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 999px;
+            display: inline-block;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .alerta {
-            background: #e84118;
+            background: #fff0ee;
+            color: #d63031;
+            border: 1px solid #f5c6c6;
+        }
+
+        .configurar {
+            background: #fff8e1;
+            color: #f39c12;
+            border: 1px solid #f9d98c;
         }
 
         .ok {
-            background: #44bd32;
+            background: #edfcef;
+            color: #27ae60;
+            border: 1px solid #b7e4c7;
         }
 
         .btn-action {
@@ -106,6 +148,10 @@
             font-size: 13px;
         }
 
+        .btn-action:hover {
+            background: #192a56;
+        }
+
         .btn-group {
             margin-top: 15px;
             display: flex;
@@ -115,6 +161,7 @@
         .empty {
             color: #999;
             font-size: 13px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -122,37 +169,57 @@
 <body>
 
 <div class="header">
+
     <div class="left">
         <div class="logo">🚗 AutoCare</div>
         <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
     </div>
 
-    <div>
+    <div class="menu">
+        <a href="/" class="btn">📋 Dashboard</a>
         <a href="/veiculos/" class="btn">🚗 Veículos</a>
         <a href="/historico/" class="btn">📊 Histórico</a>
         <a href="{% url 'alertas' %}" class="btn">🚨 Alertas</a>
+
+        <a href="/minha-conta/" class="btn">👤 Minha Conta</a>
+
+        <a href="javascript:history.back()" class="btn">⬅ Voltar</a>
 
         <form action="/accounts/logout/" method="post" style="display:inline;">
             {% csrf_token %}
             <button type="submit" class="btn">Sair</button>
         </form>
     </div>
+
 </div>
 
 <div class="container">
 
-    <h2>📋 Manutenções</h2>
+    <h2>📋 Resumo de Manutenções</h2>
 
     {% if not tem_veiculo %}
-        <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
+
+        <div class="message-box">
             🚗 Você ainda não cadastrou um veículo.
-            <a href="/veiculos/" class="btn-action">Cadastrar veículo</a>
+            <br><br>
+
+            <a href="/veiculos/" class="btn-action">
+                Cadastrar veículo
+            </a>
+        </div>
+
+    {% elif not tem_email %}
+
+        <div class="message-box">
+            📧 Cadastre seu email na área "Minha Conta" para receber alertas automáticos.
         </div>
 
     {% elif not tem_manutencao %}
-        <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
-            🔧 Cadastre suas primeiras manutenções para começar a receber alertas
+
+        <div class="message-box">
+            🔧 Cadastre suas primeiras manutenções para começar a receber alertas.
         </div>
+
     {% endif %}
 
     <div class="grid">
@@ -161,24 +228,41 @@
         <div class="card">
 
             <h3>
-                {{ item.tipo.nome }}
+                <span>{{ item.tipo.nome }}</span>
 
-                {% if item.alerta %}
-                    <span class="status alerta">⚠ Atenção</span>
+                {% if item.sem_historico %}
+
+                    <span class="status configurar">
+                        ⚠ Configurar
+                    </span>
+
+                {% elif item.alerta %}
+
+                    <span class="status alerta">
+                        🔴 Pendente
+                    </span>
+
                 {% else %}
-                    <span class="status ok">✔ OK</span>
+
+                    <span class="status ok">
+                        🟢 Em dia
+                    </span>
+
                 {% endif %}
             </h3>
 
             <div class="info">
-                <b>Veículo:</b> {{ item.veiculo.modelo }}
+                <b>Veículo:</b> {{ item.veiculo.marca }} {{ item.veiculo.modelo }}
             </div>
 
             {% if item.sem_historico %}
+
                 <div class="info empty">
-                    ⚠ Nunca registrado
+                    ⚠ Registre a última manutenção realizada para que o sistema calcule os próximos alertas.
                 </div>
+
             {% else %}
+
                 <div class="info">
                     <b>Última troca:</b> {{ item.ultima_data }}
                 </div>
@@ -186,10 +270,12 @@
                 <div class="info">
                     <b>KM:</b> {{ item.ultimo_km }}
                 </div>
+
             {% endif %}
 
             <div class="info">
                 <b>Próxima:</b>
+
                 {% if item.proxima_data %}
                     {{ item.proxima_data }}
                 {% else %}
@@ -199,6 +285,7 @@
 
             <div class="info">
                 <b>Próx. KM:</b>
+
                 {% if item.proximo_km %}
                     {{ item.proximo_km }}
                 {% else %}

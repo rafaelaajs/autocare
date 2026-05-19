@@ -20,19 +20,41 @@
             align-items: center;
         }
 
+        .left {
+            display: flex;
+            flex-direction: column;
+        }
+
         .logo {
             font-size: 22px;
             font-weight: bold;
         }
 
-        .menu a {
+        .slogan {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .menu {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-menu {
             background: white;
             color: #273c75;
             padding: 8px 12px;
             border-radius: 6px;
             text-decoration: none;
-            margin-left: 10px;
             font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-menu:hover {
+            background: #dcdde1;
         }
 
         /* 🔥 CONTAINER */
@@ -58,6 +80,26 @@
 
         .btn-add:hover {
             background: #192a56;
+        }
+
+        /* 🔥 MENSAGENS */
+        .message-box {
+            background: #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #2d3436;
+            font-size: 14px;
+        }
+
+        .alert-box {
+            background: #dff9fb;
+            color: #130f40;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
 
         /* 🔥 GRID */
@@ -117,13 +159,6 @@
         .btn-delete:hover {
             background: #c23616;
         }
-
-        /* 🔥 VAZIO */
-        .empty {
-            color: #999;
-            font-size: 14px;
-            margin-top: 20px;
-        }
     </style>
 </head>
 
@@ -131,13 +166,30 @@
 
 <!-- 🔥 HEADER -->
 <div class="header">
-    <div class="logo">🚗 AutoCare</div>
+
+    <div class="left">
+        <div class="logo">🚗 AutoCare</div>
+        <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
+    </div>
 
     <div class="menu">
-        <a href="/">📋 Dashboard</a>
-        <a href="/historico/">📊 Histórico</a>
-        <a href="/accounts/logout/">Sair</a>
+        <a href="/" class="btn-menu">📋 Dashboard</a>
+        <a href="/veiculos/" class="btn-menu">🚗 Veículos</a>
+        <a href="/historico/" class="btn-menu">📊 Histórico</a>
+        <a href="/alertas/" class="btn-menu">🚨 Alertas</a>
+
+        <!-- 🔥 Minha Conta -->
+        <a href="/minha-conta/" class="btn-menu">👤 Minha Conta</a>
+
+        <!-- 🔥 Voltar -->
+        <a href="javascript:history.back()" class="btn-menu">⬅ Voltar</a>
+
+        <form action="/accounts/logout/" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-menu">Sair</button>
+        </form>
     </div>
+
 </div>
 
 <!-- 🔥 CONTEÚDO -->
@@ -148,20 +200,35 @@
     <a href="/veiculo/novo/" class="btn-add">➕ Novo veículo</a>
 
     {% if veiculos %}
+    <div class="alert-box">
+        📧 Cadastre seu email na área "Minha Conta" para receber alertas automáticos de manutenção.
+    </div>
+    {% endif %}
+
+    {% if veiculos %}
     <div class="grid">
 
         {% for v in veiculos %}
         <div class="card">
 
-            <h3>{{ v.modelo }}</h3>
+            <h3>{{ v.marca }} {{ v.modelo }}</h3>
 
-            <div class="info"><b>Marca:</b> {{ v.marca }}</div>
-            <div class="info"><b>Ano:</b> {{ v.ano }}</div>
-            <div class="info"><b>KM atual:</b> {{ v.km_atual }}</div>
+            <div class="info">
+                <b>Ano:</b> {{ v.ano }}
+            </div>
+
+            <div class="info">
+                <b>KM atual:</b> {{ v.km_atual }}
+            </div>
 
             <div class="actions">
-                <a href="/veiculo/{{ v.id }}/editar/" class="btn btn-edit">✏️ Editar</a>
-                <a href="/veiculo/{{ v.id }}/deletar/" class="btn btn-delete">❌ Excluir</a>
+                <a href="/veiculo/{{ v.id }}/editar/" class="btn btn-edit">
+                    ✏️ Editar
+                </a>
+
+                <a href="/veiculo/{{ v.id }}/deletar/" class="btn btn-delete">
+                    ❌ Excluir
+                </a>
             </div>
 
         </div>
@@ -170,9 +237,11 @@
     </div>
 
     {% else %}
-        <div class="empty">
-            Nenhum veículo cadastrado ainda 🚗
+
+        <div class="message-box">
+            🚗 Você ainda não cadastrou um veículo.
         </div>
+
     {% endif %}
 
 </div>
