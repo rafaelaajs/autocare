@@ -47,6 +47,7 @@ class Manutencao(models.Model):
     alerta_7_dias_antes = models.BooleanField(default=False)
     alerta_no_dia = models.BooleanField(default=False)
     alerta_7_dias_depois = models.BooleanField(default=False)
+    alerta_atrasado = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.tipo.nome} - {self.veiculo}"

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.utils import timezone
+from core.services.alert_service import verificar_e_enviar_alertas
 
 from .models import Veiculo, Manutencao, TipoManutencao
 from .forms import ManutencaoForm, VeiculoForm
@@ -11,6 +12,7 @@ from .forms import ManutencaoForm, VeiculoForm
 # 🚗 DASHBOARD
 @login_required
 def dashboard(request):
+    verificar_e_enviar_alertas()
     veiculos = Veiculo.objects.filter(usuario=request.user)
     tipos = TipoManutencao.objects.all()
 
