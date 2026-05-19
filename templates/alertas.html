@@ -10,22 +10,74 @@
             margin: 0;
         }
 
+        /* 🔥 HEADER */
         .header {
             background: #273c75;
             color: white;
             padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
+        .left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .slogan {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .menu {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-menu {
+            background: white;
+            color: #273c75;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-menu:hover {
+            background: #dcdde1;
+        }
+
+        /* 🔥 CONTAINER */
         .container {
             padding: 30px;
         }
 
+        h2 {
+            margin: 0;
+        }
+
+        /* 🔥 CARDS */
         .card {
             background: white;
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #273c75;
         }
 
         .vencido {
@@ -35,33 +87,105 @@
         .proximo {
             border-left: 6px solid #fbc531;
         }
+
+        .info {
+            margin-top: 10px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .status-vencido {
+            color: #e84118;
+            font-weight: bold;
+        }
+
+        .status-proximo {
+            color: #e1a400;
+            font-weight: bold;
+        }
+
+        .empty {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            color: #44bd32;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 
 <body>
 
+<!-- 🔥 HEADER -->
 <div class="header">
-    <h2>🚨 Alertas de Manutenção</h2>
+
+    <div class="left">
+        <div class="logo">🚗 AutoCare</div>
+        <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
+    </div>
+
+    <div class="menu">
+        <a href="/" class="btn-menu">📋 Dashboard</a>
+        <a href="/veiculos/" class="btn-menu">🚗 Veículos</a>
+        <a href="/historico/" class="btn-menu">📊 Histórico</a>
+        <a href="/alertas/" class="btn-menu">🚨 Alertas</a>
+
+        <!-- 🔥 Minha Conta -->
+        <a href="#" class="btn-menu">👤 Minha Conta</a>
+
+        <!-- 🔥 Voltar -->
+        <a href="javascript:history.back()" class="btn-menu">⬅ Voltar</a>
+
+        <form action="/accounts/logout/" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-menu">Sair</button>
+        </form>
+    </div>
+
 </div>
 
+<!-- 🔥 CONTEÚDO -->
 <div class="container">
 
+    <h2>🚨 Alertas de Manutenção</h2>
+
+    <br>
+
     {% if alertas %}
+
         {% for a in alertas %}
             <div class="card {{ a.nivel }}">
+
                 <h3>{{ a.tipo.nome }}</h3>
-                <p><b>Veículo:</b> {{ a.veiculo.modelo }}</p>
-                <p><b>Data:</b> {{ a.proxima_data }}</p>
+
+                <div class="info">
+                    <b>Veículo:</b> {{ a.veiculo.marca }} {{ a.veiculo.modelo }}
+                </div>
+
+                <div class="info">
+                    <b>Data prevista:</b> {{ a.proxima_data }}
+                </div>
 
                 {% if a.nivel == "vencido" %}
-                    <p style="color:red;">🔴 Vencido há {{ a.dias_exibicao }} dias</p>
+                    <div class="info status-vencido">
+                        🔴 Vencido há {{ a.dias_exibicao }} dias
+                    </div>
                 {% else %}
-                    <p style="color:orange;">🟡 Vence em {{ a.dias }} dias</p>
+                    <div class="info status-proximo">
+                        🟡 Vence em {{ a.dias }} dias
+                    </div>
                 {% endif %}
+
             </div>
         {% endfor %}
+
     {% else %}
-        <p>🎉 Nenhuma manutenção crítica!</p>
+
+        <div class="empty">
+            🎉 Nenhuma manutenção crítica no momento!
+        </div>
+
     {% endif %}
 
 </div>
