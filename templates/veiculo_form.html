@@ -3,16 +3,7 @@
 <head>
     <title>Veículo - AutoCare</title>
 
-<script>
-    const form = document.getElementById('veiculo-form');
-    const button = document.getElementById('submit-btn');
-
-    form.addEventListener('submit', () => {
-        button.disabled = true;
-        button.innerText = 'Salvando...';
-    });
-</script>
-    <style></style>
+    <style>
         body {
             font-family: 'Segoe UI', Arial;
             background: linear-gradient(135deg, #273c75, #40739e);
@@ -63,6 +54,7 @@
             margin-bottom: 15px;
             border-radius: 6px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
 
         input:focus {
@@ -123,6 +115,16 @@
     </div>
 
 </div>
+
+<script>
+    const form = document.getElementById('veiculo-form');
+    const button = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', () => {
+        button.disabled = true;
+        button.innerText = 'Salvando...';
+    });
+</script>
 
 </body>
 </html>
