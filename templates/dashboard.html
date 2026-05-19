@@ -82,8 +82,13 @@
         .card {
             background: white;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            transition: 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
         }
 
         .card h3 {
@@ -92,6 +97,7 @@
             align-items: center;
             margin: 0;
             color: #273c75;
+            font-size: 18px;
         }
 
         .info {
@@ -100,19 +106,28 @@
             color: #555;
         }
 
+        /* 🔥 NOVO ALERTA */
         .status {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 6px;
-            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 6px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.3px;
         }
 
         .alerta {
-            background: #e84118;
+            background: #ffe5e0;
+            color: #c23616;
+            border: 1px solid #f5b7b1;
         }
 
         .ok {
-            background: #44bd32;
+            background: #eafaf1;
+            color: #27ae60;
+            border: 1px solid #b8e994;
         }
 
         .btn-action {
@@ -124,6 +139,10 @@
             border-radius: 6px;
             text-decoration: none;
             font-size: 13px;
+        }
+
+        .btn-action:hover {
+            background: #192a56;
         }
 
         .btn-group {
@@ -154,10 +173,8 @@
         <a href="/historico/" class="btn">📊 Histórico</a>
         <a href="{% url 'alertas' %}" class="btn">🚨 Alertas</a>
 
-        <!-- 🔥 Minha Conta (temporário) -->
         <a href="#" class="btn">👤 Minha Conta</a>
 
-        <!-- 🔥 Voltar -->
         <a href="javascript:history.back()" class="btn">⬅ Voltar</a>
 
         <form action="/accounts/logout/" method="post" style="display:inline;">
@@ -197,14 +214,18 @@
                 {{ item.tipo.nome }}
 
                 {% if item.alerta %}
-                    <span class="status alerta">⚠ Atenção</span>
+                    <span class="status alerta">
+                        ⚠ Atenção
+                    </span>
                 {% else %}
-                    <span class="status ok">✔ OK</span>
+                    <span class="status ok">
+                        ✔ OK
+                    </span>
                 {% endif %}
             </h3>
 
             <div class="info">
-                <b>Veículo:</b> {{ item.veiculo.modelo }}
+                <b>Veículo:</b> {{ item.veiculo.marca }} {{ item.veiculo.modelo }}
             </div>
 
             {% if item.sem_historico %}
