@@ -125,10 +125,16 @@
             border: 1px solid #f5c6c6;
         }
 
-        .ok {
+        .configurar {
             background: #fff8e1;
             color: #f39c12;
             border: 1px solid #f9d98c;
+        }
+
+        .ok {
+            background: #edfcef;
+            color: #27ae60;
+            border: 1px solid #b7e4c7;
         }
 
         .btn-action {
@@ -155,6 +161,7 @@
         .empty {
             color: #999;
             font-size: 13px;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -223,14 +230,24 @@
             <h3>
                 <span>{{ item.tipo.nome }}</span>
 
-                {% if item.alerta %}
+                {% if item.sem_historico %}
+
+                    <span class="status configurar">
+                        ⚠ Configurar
+                    </span>
+
+                {% elif item.alerta %}
+
                     <span class="status alerta">
                         🔴 Pendente
                     </span>
+
                 {% else %}
+
                     <span class="status ok">
-                        🟡 Próxima
+                        🟢 Em dia
                     </span>
+
                 {% endif %}
             </h3>
 
@@ -239,10 +256,13 @@
             </div>
 
             {% if item.sem_historico %}
+
                 <div class="info empty">
-                    ⚠ Nunca registrado
+                    ⚠ Registre a última manutenção realizada para que o sistema calcule os próximos alertas.
                 </div>
+
             {% else %}
+
                 <div class="info">
                     <b>Última troca:</b> {{ item.ultima_data }}
                 </div>
@@ -250,6 +270,7 @@
                 <div class="info">
                     <b>KM:</b> {{ item.ultimo_km }}
                 </div>
+
             {% endif %}
 
             <div class="info">
