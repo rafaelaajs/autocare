@@ -82,7 +82,17 @@
             background: #192a56;
         }
 
-        /* 🔥 ALERTA */
+        /* 🔥 MENSAGENS */
+        .message-box {
+            background: #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #2d3436;
+            font-size: 14px;
+        }
+
         .alert-box {
             background: #dff9fb;
             color: #130f40;
@@ -149,13 +159,6 @@
         .btn-delete:hover {
             background: #c23616;
         }
-
-        /* 🔥 VAZIO */
-        .empty {
-            color: #999;
-            font-size: 14px;
-            margin-top: 20px;
-        }
     </style>
 </head>
 
@@ -210,12 +213,22 @@
 
             <h3>{{ v.marca }} {{ v.modelo }}</h3>
 
-            <div class="info"><b>Ano:</b> {{ v.ano }}</div>
-            <div class="info"><b>KM atual:</b> {{ v.km_atual }}</div>
+            <div class="info">
+                <b>Ano:</b> {{ v.ano }}
+            </div>
+
+            <div class="info">
+                <b>KM atual:</b> {{ v.km_atual }}
+            </div>
 
             <div class="actions">
-                <a href="/veiculo/{{ v.id }}/editar/" class="btn btn-edit">✏️ Editar</a>
-                <a href="/veiculo/{{ v.id }}/deletar/" class="btn btn-delete">❌ Excluir</a>
+                <a href="/veiculo/{{ v.id }}/editar/" class="btn btn-edit">
+                    ✏️ Editar
+                </a>
+
+                <a href="/veiculo/{{ v.id }}/deletar/" class="btn btn-delete">
+                    ❌ Excluir
+                </a>
             </div>
 
         </div>
@@ -224,9 +237,11 @@
     </div>
 
     {% else %}
-        <div class="empty">
+
+        <div class="message-box">
             🚗 Você ainda não cadastrou um veículo.
         </div>
+
     {% endif %}
 
 </div>
