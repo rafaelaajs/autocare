@@ -35,6 +35,12 @@
             margin-top: 4px;
         }
 
+        .menu {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         .btn {
             background: white;
             color: #273c75;
@@ -42,6 +48,12 @@
             border-radius: 6px;
             text-decoration: none;
             font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #dcdde1;
         }
 
         .container {
@@ -51,6 +63,14 @@
         h2 {
             margin-bottom: 20px;
             color: #2f3640;
+        }
+
+        .message-box {
+            background: #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #2d3436;
         }
 
         .grid {
@@ -122,21 +142,30 @@
 <body>
 
 <div class="header">
+
     <div class="left">
         <div class="logo">🚗 AutoCare</div>
         <div class="slogan">Sua manutenção em dia, seu caminho seguro</div>
     </div>
 
-    <div>
+    <div class="menu">
+        <a href="/" class="btn">📋 Dashboard</a>
         <a href="/veiculos/" class="btn">🚗 Veículos</a>
         <a href="/historico/" class="btn">📊 Histórico</a>
         <a href="{% url 'alertas' %}" class="btn">🚨 Alertas</a>
+
+        <!-- 🔥 Minha Conta (temporário) -->
+        <a href="#" class="btn">👤 Minha Conta</a>
+
+        <!-- 🔥 Voltar -->
+        <a href="javascript:history.back()" class="btn">⬅ Voltar</a>
 
         <form action="/accounts/logout/" method="post" style="display:inline;">
             {% csrf_token %}
             <button type="submit" class="btn">Sair</button>
         </form>
     </div>
+
 </div>
 
 <div class="container">
@@ -144,14 +173,18 @@
     <h2>📋 Manutenções</h2>
 
     {% if not tem_veiculo %}
-        <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
+        <div class="message-box">
             🚗 Você ainda não cadastrou um veículo.
-            <a href="/veiculos/" class="btn-action">Cadastrar veículo</a>
+            <br><br>
+
+            <a href="/veiculos/" class="btn-action">
+                Cadastrar veículo
+            </a>
         </div>
 
     {% elif not tem_manutencao %}
-        <div style="background:#ffeaa7; padding:15px; border-radius:8px; margin-bottom:20px;">
-            🔧 Cadastre suas primeiras manutenções para começar a receber alertas
+        <div class="message-box">
+            🔧 Cadastre suas primeiras manutenções para começar a receber alertas.
         </div>
     {% endif %}
 
@@ -190,6 +223,7 @@
 
             <div class="info">
                 <b>Próxima:</b>
+
                 {% if item.proxima_data %}
                     {{ item.proxima_data }}
                 {% else %}
@@ -199,6 +233,7 @@
 
             <div class="info">
                 <b>Próx. KM:</b>
+
                 {% if item.proximo_km %}
                     {{ item.proximo_km }}
                 {% else %}
