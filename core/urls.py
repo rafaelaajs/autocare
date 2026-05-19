@@ -1,19 +1,25 @@
 from django.urls import path
 from . import views
-from .views import dashboard
-from .views import alertas
 
 urlpatterns = [
+    # 🚗 Dashboard
     path('', views.dashboard, name='dashboard'),
-    path('adicionar/', views.adicionar_manutencao, name='adicionar_manutencao'),
-    path('historico/', views.historico, name='historico'),
+
+    # 👤 Cadastro
     path('cadastro/', views.cadastro, name='cadastro'),
+
+    # 🚘 Veículos
     path('veiculos/', views.veiculos, name='veiculos'),
     path('veiculo/novo/', views.adicionar_veiculo, name='adicionar_veiculo'),
     path('veiculo/<int:id>/editar/', views.editar_veiculo, name='editar_veiculo'),
     path('veiculo/<int:id>/deletar/', views.deletar_veiculo, name='deletar_veiculo'),
-    path('', dashboard, name='dashboard'),
-    path('alertas/', alertas, name='alertas'),
+
+    # 🔧 Manutenções
+    path('adicionar/', views.adicionar_manutencao, name='adicionar_manutencao'),
+    path('historico/', views.historico, name='historico'),
     path('manutencao/editar/<int:id>/', views.editar_manutencao, name='editar_manutencao'),
     path('manutencao/deletar/<int:id>/', views.deletar_manutencao, name='deletar_manutencao'),
+
+    # 🚨 Alertas
+    path('alertas/', views.alertas, name='alertas'),
 ]
