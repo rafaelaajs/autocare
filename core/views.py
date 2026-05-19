@@ -157,7 +157,7 @@ def cadastro(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('dashboard')
+            return redirect('veiculos')
     else:
         form = UserCreationForm()
 
@@ -183,7 +183,7 @@ def adicionar_veiculo(request):
             veiculo = form.save(commit=False)
             veiculo.usuario = request.user
             veiculo.save()
-            return redirect('veiculos')
+            return redirect('dashboard')
     else:
         form = VeiculoForm()
 

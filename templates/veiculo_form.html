@@ -3,7 +3,16 @@
 <head>
     <title>Veículo - AutoCare</title>
 
-    <style>
+<script>
+    const form = document.getElementById('veiculo-form');
+    const button = document.getElementById('submit-btn');
+
+    form.addEventListener('submit', () => {
+        button.disabled = true;
+        button.innerText = 'Salvando...';
+    });
+</script>
+    <style></style>
         body {
             font-family: 'Segoe UI', Arial;
             background: linear-gradient(135deg, #273c75, #40739e);
@@ -97,7 +106,7 @@
 
     <h2>Cadastro de Veículo</h2>
 
-    <form method="post">
+    <form method="post" id="veiculo-form">
         {% csrf_token %}
 
         {% for field in form %}
@@ -106,7 +115,7 @@
             {{ field.errors }}
         {% endfor %}
 
-        <button class="btn">Salvar</button>
+        <button class="btn" id="submit-btn">Salvar</button>
     </form>
 
     <div class="link">
