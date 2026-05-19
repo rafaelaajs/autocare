@@ -52,6 +52,10 @@
             cursor: pointer;
         }
 
+        .btn-menu:hover {
+            background: #dcdde1;
+        }
+
         .container {
             padding: 30px;
             max-width: 500px;
@@ -97,6 +101,10 @@
             width: 100%;
         }
 
+        .btn-save:hover {
+            background: #192a56;
+        }
+
         .message {
             background: #dff9fb;
             padding: 15px;
@@ -107,13 +115,13 @@
         }
 
         .success {
-    background: #d4edda;
-    color: #155724;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
-}
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -148,9 +156,15 @@
         📧 Email utilizado para recebimento de alertas automáticos.
     </div>
 
+    {% if usuario.email and not tem_manutencao %}
+    <div class="message">
+        🔧 Cadastre suas primeiras manutenções para começar a receber alertas.
+    </div>
+    {% endif %}
+
     {% if sucesso %}
-        <div class="success">
-         ✅ Dados atualizados com sucesso!
+    <div class="success">
+        ✅ Dados atualizados com sucesso!
     </div>
     {% endif %}
 
@@ -159,17 +173,29 @@
         <h2>👤 Minha Conta</h2>
 
         <form method="post">
+
             {% csrf_token %}
 
             <label>Nome</label>
-            <input type="text" name="nome" value="{{ usuario.first_name }}">
+
+            <input
+                type="text"
+                name="nome"
+                value="{{ usuario.first_name }}"
+            >
 
             <label>Email</label>
-            <input type="email" name="email" value="{{ usuario.email }}">
+
+            <input
+                type="email"
+                name="email"
+                value="{{ usuario.email }}"
+            >
 
             <button class="btn-save">
                 Salvar alterações
             </button>
+
         </form>
 
     </div>

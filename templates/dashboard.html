@@ -174,7 +174,7 @@
         <a href="/historico/" class="btn">📊 Histórico</a>
         <a href="{% url 'alertas' %}" class="btn">🚨 Alertas</a>
 
-        <a href="#" class="btn">👤 Minha Conta</a>
+        <a href="/minha-conta/" class="btn">👤 Minha Conta</a>
 
         <a href="javascript:history.back()" class="btn">⬅ Voltar</a>
 
@@ -191,6 +191,7 @@
     <h2>📋 Manutenções</h2>
 
     {% if not tem_veiculo %}
+
         <div class="message-box">
             🚗 Você ainda não cadastrou um veículo.
             <br><br>
@@ -200,10 +201,18 @@
             </a>
         </div>
 
+    {% elif not tem_email %}
+
+        <div class="message-box">
+            📧 Cadastre seu email na área "Minha Conta" para receber alertas automáticos.
+        </div>
+
     {% elif not tem_manutencao %}
+
         <div class="message-box">
             🔧 Cadastre suas primeiras manutenções para começar a receber alertas.
         </div>
+
     {% endif %}
 
     <div class="grid">

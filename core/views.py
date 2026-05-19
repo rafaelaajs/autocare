@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 
 from .models import Veiculo, Manutencao, TipoManutencao
 from .forms import ManutencaoForm, VeiculoForm
@@ -60,14 +59,18 @@ def dashboard(request):
                 })
 
     tem_veiculo = veiculos.exists()
+
     tem_manutencao = Manutencao.objects.filter(
         veiculo__usuario=request.user
     ).exists()
 
+    tem_email = bool(request.user.email)
+
     contexto = {
         'dados': dados,
         'tem_veiculo': tem_veiculo,
-        'tem_manutencao': tem_manutencao
+        'tem_manutencao': tem_manutencao,
+        'tem_email': tem_email
     }
 
     return render(request, 'dashboard.html', contexto)
@@ -78,10 +81,12 @@ def dashboard(request):
 def adicionar_manutencao(request):
     if request.method == 'POST':
         form = ManutencaoForm(request.POST)
+
         if form.is_valid():
             manutencao = form.save(commit=False)
             manutencao.save()
             return redirect('dashboard')
+
     else:
         initial_data = {}
 
@@ -96,14 +101,19 @@ def adicionar_manutencao(request):
 
         form = ManutencaoForm(initial=initial_data)
 
-    form.fields['veiculo'].queryset = Veiculo.objects.filter(usuario=request.user)
+    form.fields['veiculo'].queryset = Veiculo.objects.filter(
+        usuario=request.user
+    )
 
-    return render(request, 'adicionar_manutencao.html', {'form': form})
+    return render(request, 'adicionar_manutencao.html', {
+        'form': form
+    })
 
 
 # 📊 HISTÓRICO
 @login_required
 def historico(request):
+
     manutencoes = Manutencao.objects.filter(
         veiculo__usuario=request.user
     ).order_by('-data')
@@ -116,6 +126,7 @@ def historico(request):
 # ✏️ EDITAR MANUTENÇÃO
 @login_required
 def editar_manutencao(request, id):
+
     manutencao = get_object_or_404(
         Manutencao,
         id=id,
@@ -123,19 +134,28 @@ def editar_manutencao(request, id):
     )
 
     if request.method == 'POST':
-        form = ManutencaoForm(request.POST, instance=manutencao)
+
+        form = ManutencaoForm(
+            request.POST,
+            instance=manutencao
+        )
+
         if form.is_valid():
             form.save()
-            return redirect('historico')  # 🔥 melhor UX
+            return redirect('historico')
+
     else:
         form = ManutencaoForm(instance=manutencao)
 
-    return render(request, 'adicionar_manutencao.html', {'form': form})
+    return render(request, 'adicionar_manutencao.html', {
+        'form': form
+    })
 
 
 # ❌ DELETAR MANUTENÇÃO
 @login_required
 def deletar_manutencao(request, id):
+
     manutencao = get_object_or_404(
         Manutencao,
         id=id,
@@ -146,29 +166,40 @@ def deletar_manutencao(request, id):
         manutencao.delete()
         return redirect('historico')
 
-    return render(request, 'confirmar_delete_manutencao.html'), {
+    return render(request, 'confirmar_delete_manutencao.html', {
         'manutencao': manutencao
-    }
+    })
 
 
 # 👤 CADASTRO
 def cadastro(request):
+
     if request.method == 'POST':
+
         form = UserCreationForm(request.POST)
+
         if form.is_valid():
             user = form.save()
+
             login(request, user)
+
             return redirect('veiculos')
+
     else:
         form = UserCreationForm()
 
-    return render(request, 'cadastro.html', {'form': form})
+    return render(request, 'cadastro.html', {
+        'form': form
+    })
 
 
 # 🚗 VEÍCULOS
 @login_required
 def veiculos(request):
-    veiculos = Veiculo.objects.filter(usuario=request.user)
+
+    veiculos = Veiculo.objects.filter(
+        usuario=request.user
+    )
 
     return render(request, 'veiculos.html', {
         'veiculos': veiculos
@@ -178,59 +209,102 @@ def veiculos(request):
 # ➕ ADICIONAR VEÍCULO
 @login_required
 def adicionar_veiculo(request):
+
     if request.method == 'POST':
+
         form = VeiculoForm(request.POST)
+
         if form.is_valid():
+
             veiculo = form.save(commit=False)
+
             veiculo.usuario = request.user
+
             veiculo.save()
+
             return redirect('dashboard')
+
     else:
         form = VeiculoForm()
 
-    return render(request, 'veiculo_form.html', {'form': form})
+    return render(request, 'veiculo_form.html', {
+        'form': form
+    })
 
 
 # ✏️ EDITAR VEÍCULO
 @login_required
 def editar_veiculo(request, id):
-    veiculo = get_object_or_404(Veiculo, id=id, usuario=request.user)
+
+    veiculo = get_object_or_404(
+        Veiculo,
+        id=id,
+        usuario=request.user
+    )
 
     if request.method == 'POST':
-        form = VeiculoForm(request.POST, instance=veiculo)
+
+        form = VeiculoForm(
+            request.POST,
+            instance=veiculo
+        )
+
         if form.is_valid():
             form.save()
+
             return redirect('veiculos')
+
     else:
         form = VeiculoForm(instance=veiculo)
 
-    return render(request, 'veiculo_form.html', {'form': form})
+    return render(request, 'veiculo_form.html', {
+        'form': form
+    })
 
 
 # ❌ DELETAR VEÍCULO
 @login_required
 def deletar_veiculo(request, id):
-    veiculo = get_object_or_404(Veiculo, id=id, usuario=request.user)
+
+    veiculo = get_object_or_404(
+        Veiculo,
+        id=id,
+        usuario=request.user
+    )
 
     if request.method == 'POST':
+
         veiculo.delete()
+
         return redirect('veiculos')
 
-    return render(request, 'confirmar_delete.html', {'veiculo': veiculo})
+    return render(request, 'confirmar_delete.html', {
+        'veiculo': veiculo
+    })
 
 
 # 🚨 ALERTAS
 @login_required
 def alertas(request):
-    veiculos = Veiculo.objects.filter(usuario=request.user)
+
+    veiculos = Veiculo.objects.filter(
+        usuario=request.user
+    )
+
     tipos = TipoManutencao.objects.all()
 
     hoje = timezone.now().date()
+
     lista_alertas = []
 
     for veiculo in veiculos:
+
         for tipo in tipos:
-            ultima = Manutencao.ultima_manutencao(veiculo, tipo)
+
+            ultima = Manutencao.ultima_manutencao(
+                veiculo,
+                tipo
+            )
 
             if not ultima:
                 continue
@@ -241,12 +315,15 @@ def alertas(request):
                 continue
 
             dias = (proxima_data - hoje).days
+
             dias_exibicao = abs(dias)
 
             if dias <= 0:
                 nivel = "vencido"
+
             elif dias <= 7:
                 nivel = "proximo"
+
             else:
                 continue
 
@@ -259,29 +336,40 @@ def alertas(request):
                 "nivel": nivel
             })
 
-    lista_alertas = sorted(lista_alertas, key=lambda x: x["dias"])
+    lista_alertas = sorted(
+        lista_alertas,
+        key=lambda x: x["dias"]
+    )
 
     return render(request, "alertas.html", {
         "alertas": lista_alertas
     })
 
 
-# 🚨 MINHA CONTA
-
+# 👤 MINHA CONTA
 @login_required
 def minha_conta(request):
 
     usuario = request.user
+
     sucesso = False
 
     if request.method == 'POST':
+
         usuario.first_name = request.POST.get('nome')
+
         usuario.email = request.POST.get('email')
+
         usuario.save()
 
         sucesso = True
 
+    tem_manutencao = Manutencao.objects.filter(
+        veiculo__usuario=request.user
+    ).exists()
+
     return render(request, 'minha_conta.html', {
         'usuario': usuario,
-        'sucesso': sucesso
+        'sucesso': sucesso,
+        'tem_manutencao': tem_manutencao
     })
